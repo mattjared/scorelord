@@ -12,8 +12,7 @@ interface FormattedSportsData {
 }
 
 async function fetchSportsData(): Promise<FormattedSportsData[]> {
-  // Hardcoded production URL
-  const apiUrl = 'https://scorelord.vercel.app//api/sports?sport=all';
+  const apiUrl = 'https://scorelord.vercel.app/api/sports?sport=all';
 
   console.log('Fetching sports data from:', apiUrl);
 
@@ -22,14 +21,16 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SPORTS_API_KEY}`, 
+        'Authorization': `Bearer ${process.env.SPORTS_API_KEY}`,
       },
     });
 
     console.log('Fetch response status:', response.status);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Error response body:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
     }
 
     const data = await response.json();
@@ -46,22 +47,74 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
   }
 }
 
+function formatDataForSlack(data: FormattedSportsData[]): any {
+  const blocks = data.map(event => ({
+    type: 'section',
+    fields: [
+      {
+        type: 'mrkdwn',
+        text: `*Sport:* ${event.sport}`
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Event:* ${event.event}`
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Date:* ${event.date}`
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Time:* ${event.time}`
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Teams:* ${event.teams.join(' vs ')}`
+      },
+      {
+        type: 'mrkdwn',
+        text: `*Score:* ${event.score || 'N/A'}`
+      }
+    ]
+  }));
+
+  return {
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: '*Sports Update*'
+        }
+      },
+      {
+        type: 'divider'
+      },
+      ...blocks
+    ]
+  };
+}
+
 async function sendToSlack(formattedData: FormattedSportsData[]) {
   const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!slackWebhookUrl) {
     throw new Error('Slack webhook URL is not configured');
   }
   
+  const formattedSlackMessage = formatDataForSlack(formattedData);
+  
   const response = await fetch(slackWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ data: formattedData }),
+    body: JSON.stringify(formattedSlackMessage),
   });
 
   if (!response.ok) {
-    throw new Error('Failed to send data to Slack');
+    const errorText = await response.text();
+    console.error('Slack API error:', errorText);
+    throw new Error(`Failed to send data to Slack: ${response.status} ${errorText}`);
   }
 
   return response.text();
@@ -69,10 +122,10 @@ async function sendToSlack(formattedData: FormattedSportsData[]) {
 
 export async function GET() {
   try {
-    console.log('Fetching sports data...');
+    console.log('Starting GET request handler');
     const sportsData = await fetchSportsData();
-    console.log('Sports data fetched successfully:', sportsData);
-    
+    console.log('Sports data fetched successfully, length:', sportsData.length);
+
     console.log('Sending data to Slack...');
     const slackResponse = await sendToSlack(sportsData);
     console.log('Slack response:', slackResponse);
