@@ -72,7 +72,7 @@ export async function GET() {
     console.log('Fetching sports data...');
     const sportsData = await fetchSportsData();
     console.log('Sports data fetched successfully:', sportsData);
-
+    
     console.log('Sending data to Slack...');
     const slackResponse = await sendToSlack(sportsData);
     console.log('Slack response:', slackResponse);
