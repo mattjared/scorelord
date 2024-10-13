@@ -37,7 +37,11 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
     return data;
   } catch (error) {
     console.error('Error fetching sports data:', error);
-    throw new Error(`Failed to fetch sports data: ${error.message}`);
+    if (error instanceof Error) {
+      throw new Error(`Failed to fetch sports data: ${error.message}`);
+    } else {
+      throw new Error('Failed to fetch sports data: Unknown error');
+    }
   }
 }
 
@@ -76,7 +80,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error processing sports data or sending to Slack:', error);
     return NextResponse.json(
-      { error: `Failed to process sports data or send to Slack: ${error instanceof Error ? error.message : String(error)}` }, 
+      { error: `Failed to process sports data or send to Slack: ${error instanceof Error ? error.message : 'Unknown error'}` }, 
       { status: 500 }
     );
   }
