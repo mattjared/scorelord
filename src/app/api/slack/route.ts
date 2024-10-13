@@ -106,11 +106,14 @@ import { NextResponse } from 'next/server';
 // }
 
 async function sendToSlack(message: string) {
+  console.log('Entering sendToSlack function');
   const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!slackWebhookUrl) {
+    console.error('Slack webhook URL is not configured');
     throw new Error('Slack webhook URL is not configured');
   }
   
+  console.log('Attempting to send message to Slack');
   const response = await fetch(slackWebhookUrl, {
     method: 'POST',
     headers: {
@@ -119,24 +122,28 @@ async function sendToSlack(message: string) {
     body: JSON.stringify({ text: message }),
   });
 
+  console.log('Slack API response status:', response.status);
   if (!response.ok) {
+    console.error('Failed to send message to Slack:', response.statusText);
     throw new Error(`Failed to send message to Slack: ${response.status}`);
   }
 
-  return response.text();
+  const responseText = await response.text();
+  console.log('Slack API response:', responseText);
+  return responseText;
 }
 
 export async function GET() {
+  console.log('Starting GET request handler');
   try {
-    console.log('Starting GET request handler');
-    const message = "Hello from the sports API!";
-    console.log('Sending message to Slack...');
+    const message = "Test message from Next.js API route";
+    console.log('Preparing to send message:', message);
     const slackResponse = await sendToSlack(message);
-    console.log('Slack response:', slackResponse);
+    console.log('Message sent successfully');
     
-    return NextResponse.json({ success: true, message });
+    return NextResponse.json({ success: true, message: 'Message sent to Slack', response: slackResponse });
   } catch (error) {
-    console.error('Error sending to Slack:', error);
+    console.error('Error in GET handler:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' }, 
       { status: 500 }
