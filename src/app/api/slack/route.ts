@@ -23,15 +23,17 @@ interface SlackMessage {
 
 async function fetchSportsData(): Promise<FormattedSportsData[]> {
   const apiUrl = 'https://scorelord.vercel.app/api/sports?sport=all';
+  const apiKey = process.env.ODDS_API_KEY;
 
   console.log('Fetching sports data from:', apiUrl);
+  console.log('API Key present:', !!apiKey);
 
   try {
     const response = await fetch(apiUrl, { 
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.SPORTS_API_KEY}`,
+        'Authorization': `Bearer ${apiKey}`,
       },
     });
 
@@ -53,7 +55,7 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
     return data;
   } catch (error) {
     console.error('Error fetching sports data:', error);
-    throw new Error(`Failed to fetch sports data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw error; // Re-throw the error to be caught in the GET function
   }
 }
 
@@ -142,9 +144,9 @@ export async function GET() {
     
     return NextResponse.json({ success: true, slackResponse });
   } catch (error) {
-    console.error('Error processing sports data or sending to Slack:', error);
+    console.error('Error processing sports data:', error);
     return NextResponse.json(
-      { error: `Failed to process sports data or send to Slack: ${error instanceof Error ? error.message : 'Unknown error'}` }, 
+      { error: error instanceof Error ? error.message : 'Unknown error' }, 
       { status: 500 }
     );
   }
