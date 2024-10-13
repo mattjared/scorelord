@@ -105,26 +105,22 @@ function formatDataForSlack(data: FormattedSportsData[]): SlackMessage {
   return { blocks };
 }
 
-async function sendToSlack(formattedData: FormattedSportsData[]) {
+async function sendToSlack(message: string) {
   const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!slackWebhookUrl) {
     throw new Error('Slack webhook URL is not configured');
   }
-  
-  const formattedSlackMessage = formatDataForSlack(formattedData);
   
   const response = await fetch(slackWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(formattedSlackMessage),
+    body: JSON.stringify({ text: message }),
   });
 
   if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Slack API error:', errorText);
-    throw new Error(`Failed to send data to Slack: ${response.status} ${errorText}`);
+    throw new Error(`Failed to send message to Slack: ${response.status}`);
   }
 
   return response.text();
@@ -133,16 +129,14 @@ async function sendToSlack(formattedData: FormattedSportsData[]) {
 export async function GET() {
   try {
     console.log('Starting GET request handler');
-    const sportsData = await fetchSportsData();
-    console.log('Fetched sports data:', JSON.stringify(sportsData).slice(0, 200) + '...');
-    
-    console.log('Sending data to Slack...');
-    const slackResponse = await sendToSlack(sportsData);
+    const message = "Hello from the sports API!";
+    console.log('Sending message to Slack...');
+    const slackResponse = await sendToSlack(message);
     console.log('Slack response:', slackResponse);
     
-    return NextResponse.json({ success: true, slackResponse });
+    return NextResponse.json({ success: true, message });
   } catch (error) {
-    console.error('Error processing sports data:', error);
+    console.error('Error sending to Slack:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' }, 
       { status: 500 }
