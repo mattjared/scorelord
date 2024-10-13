@@ -22,6 +22,7 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.SPORTS_API_KEY}`, 
       },
     });
 
