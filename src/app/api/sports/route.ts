@@ -109,3 +109,5 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to fetch sport data' }, { status: 500 });
   }
 }
+// Example API call: http://localhost:3000/api/sports?sport=all
+// Production API call: https://scorelord.vercel.app/api/sports?sport=all

@@ -12,10 +12,11 @@ interface FormattedSportsData {
 }
 
 async function fetchSportsData(): Promise<FormattedSportsData[]> {
-  const apiUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}/api/sports?sport=all` 
-    : 'http://localhost:3000/api/sports?sport=all';
-  
+  // Hardcoded production URL
+  const apiUrl = 'https://scorelord.vercel.app//api/sports?sport=all';
+
+  console.log('Fetching sports data from:', apiUrl);
+
   try {
     const response = await fetch(apiUrl, { 
       method: 'GET',
@@ -24,12 +25,15 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
       },
     });
 
+    console.log('Fetch response status:', response.status);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    
+    console.log('Received data:', JSON.stringify(data).slice(0, 200) + '...');
+
     if (!Array.isArray(data)) {
       throw new Error('Unexpected data format received from sports API');
     }
@@ -37,11 +41,7 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
     return data;
   } catch (error) {
     console.error('Error fetching sports data:', error);
-    if (error instanceof Error) {
-      throw new Error(`Failed to fetch sports data: ${error.message}`);
-    } else {
-      throw new Error('Failed to fetch sports data: Unknown error');
-    }
+    throw new Error(`Failed to fetch sports data: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 
