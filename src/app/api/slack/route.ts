@@ -8,13 +8,18 @@ interface FormattedSportsData {
   time: string;
   teams: string[];
   score?: string;
+  league?: string;
+  start_time?: string;
+  odds?: string[];
   // Add more fields as needed
 }
 
 interface SlackBlock {
-  type: string;
-  text?: { type: string; text: string };
-  fields?: { type: string; text: string }[];
+  type: 'section';
+  text: {
+    type: 'mrkdwn';
+    text: string;
+  };
 }
 
 interface SlackMessage {
@@ -59,52 +64,45 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
   }
 }
 
-function formatDataForSlack(data: FormattedSportsData[]): SlackMessage {
-  const blocks = data.map(event => ({
-    type: 'section',
-    fields: [
-      {
-        type: 'mrkdwn',
-        text: `*Sport:* ${event.sport}`
-      },
-      {
-        type: 'mrkdwn',
-        text: `*Event:* ${event.event}`
-      },
-      {
-        type: 'mrkdwn',
-        text: `*Date:* ${event.date}`
-      },
-      {
-        type: 'mrkdwn',
-        text: `*Time:* ${event.time}`
-      },
-      {
-        type: 'mrkdwn',
-        text: `*Teams:* ${event.teams.join(' vs ')}`
-      },
-      {
-        type: 'mrkdwn',
-        text: `*Score:* ${event.score || 'N/A'}`
-      }
-    ]
-  }));
+// type FormattedSportsData = Record<string, any>;
 
-  return {
-    blocks: [
-      {
-        type: 'section',
-        text: {
-          type: 'mrkdwn',
-          text: '*Sports Update*'
-        }
-      },
-      {
-        type: 'divider'
-      },
-      ...blocks
-    ]
-  };
+function formatDataForSlack(data: FormattedSportsData[]): SlackMessage {
+  console.log('Formatting data for Slack:', JSON.stringify(data).slice(0, 200) + '...');
+
+  const blocks: SlackBlock[] = data.reduce((acc: SlackBlock[], event: FormattedSportsData) => {
+    if (!event || typeof event !== 'object') {
+      console.warn('Unexpected event format:', event);
+      return acc;
+    }
+    const sport = event.sport as string | undefined;
+    const league = event.league as string | undefined;
+    const teams = Array.isArray(event.teams) ? event.teams : [];
+    const startTime = event.start_time as string | undefined;
+    const odds = event.odds as string[] | undefined;
+
+    if (!sport || teams.length === 0 || !startTime) {
+      console.warn('Incomplete event data:', event);
+      return acc;
+    }
+
+    const teamNames = teams.join(' vs ');
+    const oddsText = odds && odds.length > 0 ? odds.join(', ') : 'No odds available';
+
+    const block: SlackBlock = {
+      type: 'section',
+      text: {
+        type: 'mrkdwn',
+        text: `*${sport} - ${league || 'Unknown League'}*\n${teamNames}\nStart Time: ${startTime}\nOdds: ${oddsText}`
+      }
+    };
+
+    acc.push(block);
+    return acc;
+  }, []);
+
+  console.log('Formatted blocks:', JSON.stringify(blocks).slice(0, 200) + '...');
+
+  return { blocks };
 }
 
 async function sendToSlack(formattedData: FormattedSportsData[]) {
@@ -136,8 +134,8 @@ export async function GET() {
   try {
     console.log('Starting GET request handler');
     const sportsData = await fetchSportsData();
-    console.log('Sports data fetched successfully, length:', sportsData.length);
-
+    console.log('Fetched sports data:', JSON.stringify(sportsData).slice(0, 200) + '...');
+    
     console.log('Sending data to Slack...');
     const slackResponse = await sendToSlack(sportsData);
     console.log('Slack response:', slackResponse);
