@@ -12,12 +12,33 @@ interface FormattedSportsData {
 }
 
 async function fetchSportsData(): Promise<FormattedSportsData[]> {
-  const apiUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/sports?sport=all` : 'http://localhost:3000/api/sports?sport=all';
-  const response = await fetch(apiUrl);
-  if (!response.ok) {
-    throw new Error('Failed to fetch sports data');
+  const apiUrl = process.env.VERCEL_URL 
+    ? `https://${process.env.VERCEL_URL}/api/sports?sport=all` 
+    : 'http://localhost:3000/api/sports?sport=all';
+  
+  try {
+    const response = await fetch(apiUrl, { 
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    if (!Array.isArray(data)) {
+      throw new Error('Unexpected data format received from sports API');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching sports data:', error);
+    throw new Error(`Failed to fetch sports data: ${error.message}`);
   }
-  return response.json();
 }
 
 async function sendToSlack(formattedData: FormattedSportsData[]) {
@@ -43,12 +64,20 @@ async function sendToSlack(formattedData: FormattedSportsData[]) {
 
 export async function GET() {
   try {
+    console.log('Fetching sports data...');
     const sportsData = await fetchSportsData();
+    console.log('Sports data fetched successfully:', sportsData);
+
+    console.log('Sending data to Slack...');
     const slackResponse = await sendToSlack(sportsData);
+    console.log('Slack response:', slackResponse);
     
     return NextResponse.json({ success: true, slackResponse });
   } catch (error) {
     console.error('Error processing sports data or sending to Slack:', error);
-    return NextResponse.json({ error: 'Failed to process sports data or send to Slack' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to process sports data or send to Slack: ${error instanceof Error ? error.message : String(error)}` }, 
+      { status: 500 }
+    );
   }
 }
