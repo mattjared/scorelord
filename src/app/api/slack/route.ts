@@ -11,30 +11,34 @@ interface FormattedSportsData {
   // Add more fields as needed
 }
 
-async function fetchSportsData() {
-  const response = await fetch(`${process.env.VERCEL_URL}/api/sports?sport=all`);
+async function fetchSportsData(): Promise<FormattedSportsData[]> {
+  const apiUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/sports?sport=all` : 'http://localhost:3000/api/sports?sport=all';
+  const response = await fetch(apiUrl);
   if (!response.ok) {
     throw new Error('Failed to fetch sports data');
   }
   return response.json();
 }
 
-async function sendToSlack(formattedData: FormattedSportsData) {
-  const slackWebhookUrl = 'https://hooks.slack.com/triggers/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';
+async function sendToSlack(formattedData: FormattedSportsData[]) {
+  const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
+  if (!slackWebhookUrl) {
+    throw new Error('Slack webhook URL is not configured');
+  }
   
   const response = await fetch(slackWebhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(formattedData),
+    body: JSON.stringify({ data: formattedData }),
   });
 
   if (!response.ok) {
     throw new Error('Failed to send data to Slack');
   }
 
-  return response.json();
+  return response.text();
 }
 
 export async function GET() {
