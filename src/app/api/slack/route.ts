@@ -11,6 +11,16 @@ interface FormattedSportsData {
   // Add more fields as needed
 }
 
+interface SlackBlock {
+  type: string;
+  text?: { type: string; text: string };
+  fields?: { type: string; text: string }[];
+}
+
+interface SlackMessage {
+  blocks: SlackBlock[];
+}
+
 async function fetchSportsData(): Promise<FormattedSportsData[]> {
   const apiUrl = 'https://scorelord.vercel.app/api/sports?sport=all';
 
@@ -47,7 +57,7 @@ async function fetchSportsData(): Promise<FormattedSportsData[]> {
   }
 }
 
-function formatDataForSlack(data: FormattedSportsData[]): any {
+function formatDataForSlack(data: FormattedSportsData[]): SlackMessage {
   const blocks = data.map(event => ({
     type: 'section',
     fields: [
