@@ -3,6 +3,7 @@ import { SportData } from '@/app/types';
 import { fetchSportsData } from '@/app/lib';
 import { sendToSlack } from '@/app/lib';
 
+export const dynamic = 'force-dynamic';
 export async function POST() {
   console.log('sendSlackTestMessage endpoint called at:', new Date().toISOString());
   try {

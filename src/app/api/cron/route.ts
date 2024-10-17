@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   console.log('Cron job triggered at:', new Date().toISOString());
 
   try {
-    const url = `https://scorelord.vercel.app/api/runscorelord`;
+    const url = `${process.env.BASE_URL}/api/runscorelord`;
     console.log('Attempting to fetch:', url);
 
     const response = await fetch(url, {

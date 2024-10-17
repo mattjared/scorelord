@@ -3,6 +3,8 @@ import { Sport } from '@/app/lib/sports';
 import { fetchSportData } from '@/app/lib/sports';
 import { sports } from '@/app/lib/sports';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sport = searchParams.get('sport') as Sport | 'all' | null;

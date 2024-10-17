@@ -1,5 +1,6 @@
 import { sports } from '@/app/lib/sports';
 import { fetchSportData } from '@/app/lib/sports';
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const sportsData = await Promise.all(
