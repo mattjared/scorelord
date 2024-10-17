@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { SportData } from '@/app/types';
 
-export const dynamic = 'force-dynamic'
 
 async function fetchSportsData(sport: string) {
   const apiUrl = `${process.env.BASE_URL}/api/sports?sport=${sport}`;
