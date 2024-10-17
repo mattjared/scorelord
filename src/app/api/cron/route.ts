@@ -16,7 +16,3 @@ export async function GET() {
     return NextResponse.json({ success: false, error: 'Failed to run cron job' }, { status: 500 });
   }
 }
-
-export const config = {
-  runtime: 'edge',
-};
