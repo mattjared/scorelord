@@ -9,6 +9,9 @@ export async function GET() {
 
     const response = await fetch(url, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
 
     console.log('Response status:', response.status);
@@ -21,7 +24,9 @@ export async function GET() {
       throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
     }
 
-    console.log('Cron job completed successfully at:', new Date().toISOString());
+    const result = await response.json();
+    console.log('Cron job result:', result);
+
     return NextResponse.json({ success: true, message: 'Cron job completed successfully' });
   } catch (error) {
     console.error('Error in cron job:', error);
