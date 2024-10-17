@@ -4,7 +4,7 @@ export async function GET() {
   console.log('Cron job started at:', new Date().toISOString());
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/runscorelord`, {
+    const response = await fetch(`${process.env.BASE_URL}/api/runscorelord`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
