@@ -15,6 +15,8 @@ export async function GET() {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message: 'Cron job triggered' }),
+      // Add a timeout to prevent the request from hanging indefinitely
+      signal: AbortSignal.timeout(30000) // 30 seconds timeout
     });
 
     console.log('Response status:', response.status);
