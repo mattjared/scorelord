@@ -28,6 +28,30 @@ async function sendToSlack(message: string) {
   return responseText;
 }
 
+async function fetchSportsData(sport: string) {
+  const apiUrl = `http://localhost:3000/api/sports?sport=${sport}`;
+  console.log('Fetching sports data from:', apiUrl);
+  
+  const response = await fetch(apiUrl, { 
+    headers: { 'Content-Type': 'application/json' },
+  });
+
+  const responseBody = await response.text();
+  console.log('Response status:', response.status);
+  console.log('Response body:', responseBody);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch sports data: ${response.status}. Body: ${responseBody}`);
+  }
+
+  try {
+    return JSON.parse(responseBody);
+  } catch (error) {
+    console.error('Error parsing JSON:', error);
+    throw new Error(`Failed to parse response as JSON. Body: ${responseBody}`);
+  }
+}
+
 export async function GET() {
   console.log('Starting GET request handler');
   try {
@@ -41,6 +65,31 @@ export async function GET() {
     console.error('Error in GET handler:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error' }, 
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST() {
+  console.log('POST request received');
+  try {
+    console.log('Fetching baseball data...');
+    const sportsData = await fetchSportsData('baseball');
+    console.log('Sports data fetched:', sportsData);
+
+    const message = `Hello from the web app! Here's the latest baseball data:\n${JSON.stringify(sportsData, null, 2)}`;
+    
+    console.log('Sending message to Slack:', message);
+    await sendToSlack(message);
+    
+    return NextResponse.json({ success: true, message: 'Message sent to Slack with sports data' });
+  } catch (error) {
+    console.error('Error in POST handler:', error);
+    if (error instanceof Error) {
+      console.error('Error stack:', error.stack);
+    }
+    return NextResponse.json(
+      { success: false, error: error instanceof Error ? error.message : 'Unknown error' }, 
       { status: 500 }
     );
   }

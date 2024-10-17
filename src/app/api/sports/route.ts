@@ -111,3 +111,5 @@ export async function GET(request: Request) {
 }
 // Example API call: http://localhost:3000/api/sports?sport=all
 // Production API call: https://scorelord.vercel.app/api/sports?sport=all
+// Baseball API call: https://scorelord.vercel.app/api/sports?sport=baseball_mlb
+// local API call: http://localhost:3000/api/sports?sport=baseball_mlb
