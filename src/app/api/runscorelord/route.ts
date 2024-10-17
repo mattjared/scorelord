@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { SportData } from '@/app/types';
 
+export const dynamic = 'force-dynamic'
+
 async function fetchSportsData(sport: string) {
   const apiUrl = `${process.env.BASE_URL}/api/sports?sport=${sport}`;
   console.log('Fetching sports data from:', apiUrl);
@@ -103,7 +105,7 @@ export async function POST() {
 
     await sendToSlack(message.trim());
     
-    return NextResponse.json({ success: true, message: 'Message sent to Slack' });
+    return new Response(JSON.stringify({ success: true, message: 'Message sent to Slack' }));
   } catch (error) {
     console.error('Error in POST handler:', error);
     if (error instanceof Error) {

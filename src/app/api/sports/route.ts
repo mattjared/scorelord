@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 const API_KEY = process.env.ODDS_API_KEY;
 const API_BASE_URL = process.env.API_BASE_URL;
 
+export const dynamic = 'force-dynamic'
+
 const sports = [
   { key: 'icehockey_nhl', name: 'NHL' },
   { key: 'basketball_nba', name: 'NBA' },
