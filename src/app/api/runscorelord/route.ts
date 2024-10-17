@@ -1,22 +1,5 @@
 import { NextResponse } from 'next/server';
-
-interface SportData {
-  sport: string;
-  data: {
-    yesterdayScores: GameScore[];
-    todaySchedule: GameScore[];
-  };
-}
-
-interface GameScore {
-  home_team: string;
-  away_team: string;
-  scores: Array<{
-    name: string;
-    score: string;
-  }>;
-  completed: boolean;
-}
+import { SportData } from '@/app/types';
 
 async function fetchSportsData(sport: string) {
   const apiUrl = `${process.env.BASE_URL}/api/sports?sport=${sport}`;
