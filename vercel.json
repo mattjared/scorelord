@@ -2,11 +2,7 @@
   "crons": [
     {
       "path": "/api/cron",
-      "schedule": "* * * * *"
-    },
-    {
-      "path": "/api/cron-tester",
-      "schedule": "* * * * *"
+      "schedule": "0 * * * *"
     }
   ]
-}
+} 
