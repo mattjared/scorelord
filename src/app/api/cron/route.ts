@@ -6,7 +6,7 @@ export async function GET() {
   console.log('Cron job triggered at:', new Date().toISOString());
 
   try {
-    const url = `${process.env.BASE_URL}/api/runscorelord`;
+    const url = `https://scorelord.vercel.app/api/runscorelord`;
     console.log('Attempting to fetch:', url);
 
     const response = await fetch(url, {
@@ -18,6 +18,7 @@ export async function GET() {
     });
 
     console.log('Response status:', response.status);
+    console.log('Response headers:', JSON.stringify(Object.fromEntries(response.headers)));
 
     if (!response.ok) {
       const errorText = await response.text();
