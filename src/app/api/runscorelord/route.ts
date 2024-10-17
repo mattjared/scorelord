@@ -65,6 +65,7 @@ async function sendToSlack(message: string) {
 }
 
 export async function POST() {
+  console.log('sendSlackTestMessage endpoint called at:', new Date().toISOString());
   try {
     console.log('Fetching data...');
     const sportsData: SportData[] = await fetchSportsData('all');
@@ -72,11 +73,29 @@ export async function POST() {
     
     let message = `Sports Update: ${date}\n\n`;
 
+    if (!sportsData) {
+      throw new Error('Invalid or missing data structure');
+    }
+    console.log('sportsData:', sportsData);
+    // sportsData.data.yesterdayScores is an array of GameScore objects then loop over the result
+    // if sportsData.data.yesterdayScores is not empty then add the message to the message string
+    // is sportsData.data.todaySchedule IS EMPTY then skip the sport
     sportsData.forEach((sportData) => {
       const { sport, data } = sportData;
+      console.log('Processing data for:', sport);
+      console.log('Data:', data);
+
+      // Skip the sport if todaySchedule is empty
+      if (data.todaySchedule.length === 0) {
+        console.log(`Skipping ${sport} - no games scheduled for today`);
+        return; // This is equivalent to 'continue' in a regular for loop
+      }
+
+      // Process yesterday's scores
       if (data.yesterdayScores.length > 0) {
         message += `🪄 Yesterday's ${sport} Scores:\n`;
         data.yesterdayScores.forEach((game) => {
+          console.log('Processing yesterday\'s scores for:', game);
           const homeScore = game.scores.find(s => s.name === game.home_team)?.score;
           const awayScore = game.scores.find(s => s.name === game.away_team)?.score;
           message += `${game.home_team} ${homeScore} - ${awayScore} ${game.away_team}\n`;
@@ -84,16 +103,15 @@ export async function POST() {
         message += '\n';
       }
 
-      if (data.todaySchedule.length > 0) {
-        message += `🔮 Today's ${sport} Schedule:\n`;
-        data.todaySchedule.forEach((game) => {
-          const homeScore = game.scores.find(s => s.name === game.home_team)?.score;
-          const awayScore = game.scores.find(s => s.name === game.away_team)?.score;
-          const scoreInfo = game.completed ? `${homeScore} - ${awayScore}` : 'vs';
-          message += `${game.home_team} ${scoreInfo} ${game.away_team}\n`;
-        });
-        message += '\n';
-      }
+      // Process today's schedule
+      message += `🔮 Today's ${sport} Schedule:\n`;
+      data.todaySchedule.forEach((game) => {
+        console.log('Processing today\'s game:', JSON.stringify(game, null, 2));
+        const homeTeam = game.home_team || 'Unknown';
+        const awayTeam = game.away_team || 'Unknown';
+        message += `${homeTeam} vs ${awayTeam}\n`;
+      });
+      message += '\n';
     });
 
     if (message === `🔮 Scorelord here for the update for today: ${date}\n\n`) {
