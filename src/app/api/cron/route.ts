@@ -15,13 +15,10 @@ export async function GET() {
     });
 
     console.log('Response status:', response.status);
-    console.log('Response headers:', JSON.stringify(Object.fromEntries(response.headers)));
-
-    const responseText = await response.text();
-    console.log('Response body:', responseText);
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}, body: ${responseText}`);
+      const errorText = await response.text();
+      throw new Error(`HTTP error! status: ${response.status}, body: ${errorText}`);
     }
 
     const result = await response.json();
