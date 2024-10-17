@@ -4,7 +4,7 @@ export async function GET() {
   console.log('Cron job started at:', new Date().toISOString());
 
   try {
-    const url = `${process.env.VERCEL_URL}/api/sendSlackTestMessage`;
+    const url = `${process.env.BASE_URL}/api/sendSlackTestMessage`;
     console.log('Attempting to call:', url);
 
     const response = await fetch(url, {
