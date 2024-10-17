@@ -1,5 +1,23 @@
 import { NextResponse } from 'next/server';
 
+interface SportData {
+  sport: string;
+  data: {
+    yesterdayScores: GameScore[];
+    todaySchedule: GameScore[];
+  };
+}
+
+interface GameScore {
+  home_team: string;
+  away_team: string;
+  scores: Array<{
+    name: string;
+    score: string;
+  }>;
+  completed: boolean;
+}
+
 async function fetchSportsData(sport: string) {
   const apiUrl = `${process.env.BASE_URL}/api/sports?sport=${sport}`;
   console.log('Fetching sports data from:', apiUrl);
@@ -48,10 +66,41 @@ async function sendToSlack(message: string) {
 
 export async function POST() {
   try {
-    console.log('Fetching MLB data...');
-    const sportsData = await fetchSportsData('MLB');
-    const message = `Hello from the web app! Here's the latest MLB data:\n${JSON.stringify(sportsData, null, 2)}`;
-    await sendToSlack(message);
+    console.log('Fetching data...');
+    const sportsData: SportData[] = await fetchSportsData('all');
+    const date = new Date().toLocaleDateString();
+    
+    let message = `Sports Update: ${date}\n\n`;
+
+    sportsData.forEach((sportData) => {
+      const { sport, data } = sportData;
+      if (data.yesterdayScores.length > 0) {
+        message += `🪄 Yesterday's ${sport} Scores:\n`;
+        data.yesterdayScores.forEach((game) => {
+          const homeScore = game.scores.find(s => s.name === game.home_team)?.score;
+          const awayScore = game.scores.find(s => s.name === game.away_team)?.score;
+          message += `${game.home_team} ${homeScore} - ${awayScore} ${game.away_team}\n`;
+        });
+        message += '\n';
+      }
+
+      if (data.todaySchedule.length > 0) {
+        message += `🔮 Today's ${sport} Schedule:\n`;
+        data.todaySchedule.forEach((game) => {
+          const homeScore = game.scores.find(s => s.name === game.home_team)?.score;
+          const awayScore = game.scores.find(s => s.name === game.away_team)?.score;
+          const scoreInfo = game.completed ? `${homeScore} - ${awayScore}` : 'vs';
+          message += `${game.home_team} ${scoreInfo} ${game.away_team}\n`;
+        });
+        message += '\n';
+      }
+    });
+
+    if (message === `🔮 Scorelord here for the update for today: ${date}\n\n`) {
+      message += 'No scores or schedules available for any sport.';
+    }
+
+    await sendToSlack(message.trim());
     
     return NextResponse.json({ success: true, message: 'Message sent to Slack' });
   } catch (error) {
