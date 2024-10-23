@@ -49,3 +49,5 @@ export async function GET(request: Request) {
 // Production API call: https://scorelord.vercel.app/api/sports?sport=all
 // Baseball API call: https://scorelord.vercel.app/api/sports?sport=baseball_mlb
 // local API call: http://localhost:3000/api/sports?sport=baseball_mlb
+// basketball API call: https://scorelord.vercel.app/api/sports?sport=basketball_nba
+// local basketball API call: http://localhost:3000/api/sports?sport=basketball_nba

@@ -23,13 +23,14 @@ export async function fetchSportsData(sport: string) {
   }
 }
 
-export async function sendToSlack(message: string) {
-  const slackWebhookUrl = process.env.SLACK_WEBHOOK_URL;
-  if (!slackWebhookUrl) {
+export async function sendToSlack(message: string, sport: string) {
+  const webhookUrl = getWebhookUrlForSport(sport)
+  console.log(message);
+  if (!webhookUrl) {
     throw new Error('Slack webhook URL is not configured');
   }
   
-  const response = await fetch(slackWebhookUrl, {
+  const response = await fetch(webhookUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -42,4 +43,13 @@ export async function sendToSlack(message: string) {
   }
 
   return response.text();
+}
+
+function getWebhookUrlForSport(sport: string): string {
+  switch (sport.toLowerCase()) {
+    case 'NBA':
+      return process.env.SLACK_WEBHOOK_URL_NBA || '';
+    default:
+      return process.env.SLACK_WEBHOOK_URL || '';
+  }
 }
