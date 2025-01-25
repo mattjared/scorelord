@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { Fira_Code } from 'next/font/google'
 import "./globals.css";
 import Footer from "./components/footer";
-
+import Header from "./components/header";
 export const metadata: Metadata = {
   title: "scorelord",
-  description: "scorelord",
+  description: "scorelord || the cauldron is calling",
 };
 
 const firaCode = Fira_Code({
@@ -22,7 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${firaCode.variable}`}>
       <body className="font-sans">
-        <main className="min-h-screen max-w-screen-lg mx-auto">
+        <main className="min-h-screen max-w-screen-lg mx-auto text-purple-400">
+          <Header />
           {children}
           <Footer />
         </main>

@@ -10,21 +10,21 @@ export default async function Home() {
     }))
   );
   return (
-    <div className="p-8">
-      <h1 className="text-5xl font-bold text-teal-500 tracking-tight mb-2">Welcome to Scorelord</h1>
-      <p className="text-white mb-8">All the scores. None of the ads. The cauldron is calling.</p>
-      <form action="/api/runscorelord" method="post">
-        <button 
-          type="submit"
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-8"
-        >
-          Send Sample Data to Slack
-        </button>
-      </form>
+    <div className="pb-8">
+      <div className="hidden">
+        <form action="/api/runscorelord" method="post">
+          <button 
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-8"
+          >
+            Send Sample Data to Slack
+          </button>
+        </form>
+      </div>
 
       {sportsData.map((sport, index) => (
         <div key={index} className="mb-12">
-          <h2 className="text-3xl mb-4">{sport.sport}</h2>
+          <h2 className="text-3xl mb-2">{sport.sport}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl mb-4">Yesterday&apos;s {sport.sport} Scores</h3>
