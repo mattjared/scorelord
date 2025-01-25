@@ -10,8 +10,9 @@ export default async function Home() {
     }))
   );
   return (
-    <div className="min-h-screen  text-green-400 p-8 font-mono max-w-screen-lg mx-auto">
-      <h1 className="text-4xl mb-8 text-center">Sports Scoreboard</h1>
+    <div className="p-8">
+      <h1 className="text-5xl font-bold text-teal-500 tracking-tight mb-2">Welcome to Scorelord</h1>
+      <p className="text-white mb-8">All the scores. None of the ads. The cauldron is calling.</p>
       <form action="/api/runscorelord" method="post">
         <button 
           type="submit"
