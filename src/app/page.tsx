@@ -11,7 +11,7 @@ export default async function Home() {
   );
   return (
     <div className="pb-8">
-      <div className="hidden">
+      <div className="">
         <form action="/api/runscorelord" method="post">
           <button 
             type="submit"

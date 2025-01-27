@@ -60,40 +60,40 @@ export async function POST() {
 
     await sendToSlack(message.trim(), "all");
 
-    const sports = ['NBA']; // Add or remove sports as needed
-    for (const sport of sports) {
-      const sportData = sportsData.find(data => data.sport.toLowerCase() === sport.toLowerCase());
-      if (sportData) {
-        let message = `${sport.toUpperCase()} Update for: ${date}\n\n`;
-        // ... process sportData and build sportMessage ...
-        if (sportData.data.yesterdayScores.length > 0) {
-          message += `🪄 Yesterday's Scores:\n`;
-          sportData.data.yesterdayScores.forEach((game) => {
-            const homeScore = game.scores.find(s => s.name === game.home_team)?.score;
-            const awayScore = game.scores.find(s => s.name === game.away_team)?.score;
-            message += `${game.home_team} ${homeScore} - ${awayScore} ${game.away_team}\n`;
-          });
-          message += '\n';
-        }
-        if (sportData.data.todaySchedule.length > 0) {
-          message += `🔮 Today's Schedule:\n`;
-          sportData.data.todaySchedule.forEach((game) => {
-            const homeTeam = game.home_team || 'Unknown';
-            const awayTeam = game.away_team || 'Unknown';
-            message += `${homeTeam} vs ${awayTeam}\n`;
-          });
-          message += '\n';
-        }
-        if (message === `Sports Update for ${sport.toUpperCase()}: ${date}\n\n`) {
-          message += 'No scores or schedules available for this sport.';
-        }
-        try {
-          await sendToSlack(message.trim(), sport);
-        } catch (error) {
-          console.error(`Error sending update for ${sport}:`, error);
-        }
-      }
-    }
+    // const sports = ['NBA']; // Add or remove sports as needed
+    // for (const sport of sports) {
+    //   const sportData = sportsData.find(data => data.sport.toLowerCase() === sport.toLowerCase());
+    //   if (sportData) {
+    //     let message = `${sport.toUpperCase()} Update for: ${date}\n\n`;
+    //     // ... process sportData and build sportMessage ...
+    //     if (sportData.data.yesterdayScores.length > 0) {
+    //       message += `🪄 Yesterday's Scores:\n`;
+    //       sportData.data.yesterdayScores.forEach((game) => {
+    //         const homeScore = game.scores.find(s => s.name === game.home_team)?.score;
+    //         const awayScore = game.scores.find(s => s.name === game.away_team)?.score;
+    //         message += `${game.home_team} ${homeScore} - ${awayScore} ${game.away_team}\n`;
+    //       });
+    //       message += '\n';
+    //     }
+    //     if (sportData.data.todaySchedule.length > 0) {
+    //       message += `🔮 Today's Schedule:\n`;
+    //       sportData.data.todaySchedule.forEach((game) => {
+    //         const homeTeam = game.home_team || 'Unknown';
+    //         const awayTeam = game.away_team || 'Unknown';
+    //         message += `${homeTeam} vs ${awayTeam}\n`;
+    //       });
+    //       message += '\n';
+    //     }
+    //     if (message === `Sports Update for ${sport.toUpperCase()}: ${date}\n\n`) {
+    //       message += 'No scores or schedules available for this sport.';
+    //     }
+    //     try {
+    //       await sendToSlack(message.trim(), sport);
+    //     } catch (error) {
+    //       console.error(`Error sending update for ${sport}:`, error);
+    //     }
+    //   }
+    // }
     
     return new Response(JSON.stringify({ success: true, message: 'Message sent to Slack' }));
   } catch (error) {

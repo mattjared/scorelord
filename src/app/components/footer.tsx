@@ -2,36 +2,11 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="w-full border-t border-gray-800 py-4">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
-          <div className="text-sm text-gray-400">
-            © {new Date().getFullYear()} ScoreLord. All rights reserved.
-          </div>
-          <div className="flex gap-4">
-            <Link 
-              href="https://github.com/mattjared/scorelord" 
-              target="_blank"
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              GitHub
-            </Link>
-            <Link 
-              href="https://astro.build/themes/details/astropaper/"
-              target='_blank'
-              className='text-gray-400 hover:text-white transition-colors'
-            >
-              Design inspired by Astropaper
-            </Link>
-            <Link 
-              href="/about" 
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              About
-            </Link>
-          </div>
-        </div>
-      </div>
+    <footer className="w-full border-t border-gray-800 p-6 text-xs container mx-auto flex flex-row gap-4 justify-center">
+        <p>© {new Date().getFullYear()} ScoreLord. All rights reserved.</p>
+        <Link  href="https://github.com/mattjared/scorelord" target="_blank" className="text-gray-400 hover:text-white transition-colors">Code on GitHub</Link>
+        <Link  href="https://vercel.com" target="_blank" className="text-gray-400 hover:text-white transition-colors">Deployed with Vercel</Link>
+        <Link href="https://mattjared.xyz" target='_blank' className='text-gray-400 hover:text-white transition-colors'>Made by Matt Jared</Link>
     </footer>
   )
 }
