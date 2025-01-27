@@ -13,6 +13,10 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Sport parameter is required' }, { status: 400 });
   }
 
+  // If the sport is 'all', fetch data for all sports
+  // Example API call: http://localhost:3000/api/sports?sport=all
+  // Production API call: https://scorelord.vercel.app/api/sports?sport=all
+
   if (sport === 'all') {
     try {
       const allData = await Promise.all(
@@ -45,9 +49,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Failed to fetch sport data' }, { status: 500 });
   }
 }
-// Example API call: http://localhost:3000/api/sports?sport=all
-// Production API call: https://scorelord.vercel.app/api/sports?sport=all
-// Baseball API call: https://scorelord.vercel.app/api/sports?sport=baseball_mlb
-// local API call: http://localhost:3000/api/sports?sport=baseball_mlb
-// basketball API call: https://scorelord.vercel.app/api/sports?sport=basketball_nba
-// local basketball API call: http://localhost:3000/api/sports?sport=basketball_nba
