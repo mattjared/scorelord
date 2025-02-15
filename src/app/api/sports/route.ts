@@ -4,27 +4,21 @@ import { fetchSportData } from '@/app/lib/sports';
 import { sports } from '@/app/lib/sports';
 
 export const dynamic = 'force-dynamic';
+// Example API call: http://localhost:3000/api/sports?sport=all
+// Production API call: https://scorelord.vercel.app/api/sports?sport=all
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sport = searchParams.get('sport') as Sport | 'all' | null;
-  // allows CORS
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  };
-  if (request.method === 'OPTIONS') {
-    return NextResponse.json({}, { headers: corsHeaders });
-  }
-
+  const headers = new Headers({
+    "Access-Control-Allow-Origin": "*", // Allow all origins
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  });
+  
   if (!sport) {
     return NextResponse.json({ error: 'Sport parameter is required' }, { status: 400 });
   }
-
-  // If the sport is 'all', fetch data for all sports
-  // Example API call: http://localhost:3000/api/sports?sport=all
-  // Production API call: https://scorelord.vercel.app/api/sports?sport=all
 
   if (sport === 'all') {
     try {
@@ -52,7 +46,7 @@ export async function GET(request: Request) {
       sport: sportData.name, 
       yesterdayScores, 
       todaySchedule 
-    });
+    }, { headers });
   } catch (error) {
     console.error(`Error fetching data for ${sport}:`, error);
     return NextResponse.json({ error: 'Failed to fetch sport data' }, { status: 500 });
