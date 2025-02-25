@@ -7,6 +7,9 @@ export const sports = [
   { key: 'americanfootball_nfl', name: 'NFL' },
   { key: 'baseball_mlb', name: 'MLB' },
   { key: 'soccer_epl', name: 'EPL' },
+  { key: 'soccer_usa_mls', name: 'MLS' },
+  { key: 'basketball_wncaab', name: 'NCAAW' },
+  { key: 'basketball_ncaab', name: 'NCAAM' },
 ] as const;
 
 export type Sport = (typeof sports)[number]['name'];
