@@ -10,11 +10,6 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sport = searchParams.get('sport') as Sport | 'all' | null;
-  const headers = new Headers({
-    "Access-Control-Allow-Origin": "*", // Allow all origins
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  });
   
   if (!sport) {
     return NextResponse.json({ error: 'Sport parameter is required' }, { status: 400 });
@@ -28,7 +23,9 @@ export async function GET(request: Request) {
           data: await fetchSportData(s.key)
         }))
       );
-      return NextResponse.json(allData);
+      // filter out any sports that have no games today or yesterday
+      const filteredData = allData.filter(sport => sport.data.yesterdayScores.length > 0 || sport.data.todaySchedule.length > 0);
+      return NextResponse.json(filteredData);
     } catch (error) {
       console.error('Error fetching all sports:', error);
       return NextResponse.json({ error: 'Failed to fetch sports data' }, { status: 500 });
@@ -46,20 +43,9 @@ export async function GET(request: Request) {
       sport: sportData.name, 
       yesterdayScores, 
       todaySchedule 
-    }, { headers });
+    });
   } catch (error) {
     console.error(`Error fetching data for ${sport}:`, error);
     return NextResponse.json({ error: 'Failed to fetch sport data' }, { status: 500 });
   }
-}
-
-export async function OPTIONS() {
-    return new Response(null, {
-        status: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-    });
 }

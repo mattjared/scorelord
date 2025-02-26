@@ -54,6 +54,8 @@ export async function fetchSportData(sportKey: string): Promise<{
   const yesterdayET = getETDate(new Date(nowET));
   yesterdayET.setDate(yesterdayET.getDate() - 1);
 
+  console.log(data);
+
   const yesterdayScores = data.filter(game => {
     const gameDate = getETDate(new Date(game.commence_time));
     return isSameDay(gameDate, yesterdayET) && game.completed;
@@ -62,7 +64,7 @@ export async function fetchSportData(sportKey: string): Promise<{
   const todaySchedule = data.filter(game => {
     const gameDate = getETDate(new Date(game.commence_time));
     return isSameDay(gameDate, nowET);
-  });
+  });   
 
   return {
     yesterdayScores,

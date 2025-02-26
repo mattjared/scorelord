@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${firaCode.variable}`}>
       <body className="font-sans">
-        <main className="min-h-screen max-w-screen-lg mx-auto text-purple-400">
+        <main className="min-h-screen mx-auto text-purple-400 px-5 md:px-10">
           <Header />
           {children}
           <Footer />
