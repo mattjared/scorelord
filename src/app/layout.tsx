@@ -21,8 +21,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${firaCode.variable}`}>
-      <body className="font-sans">
-        <main className="min-h-screen mx-auto text-purple-400 px-5 md:px-10">
+      <body className="font-mono">
+        <main className="min-h-screen mx-auto bg-gray-900 px-5 md:px-10">
           <Header />
           {children}
           <Footer />

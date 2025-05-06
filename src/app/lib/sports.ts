@@ -2,14 +2,15 @@ const API_KEY = process.env.ODDS_API_KEY;
 const API_BASE_URL = process.env.API_BASE_URL;
 
 export const sports = [
-  { key: 'icehockey_nhl', name: 'NHL' },
-  { key: 'basketball_nba', name: 'NBA' },
-  { key: 'americanfootball_nfl', name: 'NFL' },
-  { key: 'baseball_mlb', name: 'MLB' },
-  { key: 'soccer_epl', name: 'EPL' },
-  { key: 'soccer_usa_mls', name: 'MLS' },
-  { key: 'basketball_wncaab', name: 'NCAAW' },
-  { key: 'basketball_ncaab', name: 'NCAAM' },
+  { key: 'icehockey_nhl', name: 'NHL', icon: "🏒"},
+  { key: 'basketball_nba', name: 'NBA', icon: "🏀"},
+  { key: 'americanfootball_nfl', name: 'NFL', icon: "🏈"},
+  { key: 'baseball_mlb', name: 'MLB', icon: "⚾️"},
+  { key: 'soccer_epl', name: 'EPL', icon: "⚽️"},
+  { key: 'soccer_usa_mls', name: 'MLS', icon: "⚽️"},
+  { key: 'basketball_wncaab', name: 'NCAAW', icon: "🏀"},
+  { key: 'basketball_ncaab', name: 'NCAAM', icon: "🏀"},
+  { key: 'basketball_wnba', name: 'WNBA', icon: "🏀"},
 ] as const;
 
 export type Sport = (typeof sports)[number]['name'];
