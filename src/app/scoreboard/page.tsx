@@ -130,7 +130,6 @@ const leagues: LeagueData[] = [
 ]
 
 export default function Scoreboard() {
-  const [activeTab, setActiveTab] = React.useState("today")
   const [time, setTime] = React.useState(new Date())
 
   React.useEffect(() => {

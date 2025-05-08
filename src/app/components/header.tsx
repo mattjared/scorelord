@@ -2,7 +2,6 @@
 export default function Header() {
   // Get the current date and time
   const date = new Date();
-  const time = date.toLocaleTimeString().slice(0, 4);
   const day = date.toLocaleDateString('en-US', { weekday: 'long' });
   const month = date.toLocaleDateString('en-US', { month: 'long' });
   const dayOfMonth = date.getDate();
