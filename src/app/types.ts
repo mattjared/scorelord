@@ -1,17 +1,21 @@
 export interface SportData {
   sport: string;
   data: {
-    yesterdayScores: GameScore[];
-    todaySchedule: GameScore[];
+    yesterdayGames: Game[];
+    todayGames: Game[];
   };
 }
 
-export interface GameScore {
+export interface Game {
+  id: string;
+  sport_key: string;
+  sport_title: string;
+  commence_time: string;
+  completed: boolean;
   home_team: string;
   away_team: string;
   scores: Array<{
     name: string;
     score: string;
   }>;
-  completed: boolean;
 }

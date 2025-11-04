@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { SportData } from '@/app/types';
 import { fetchSportsData } from '@/app/lib';
 import { sendToSlack } from '@/app/lib';
+import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 export async function POST() {
@@ -72,3 +73,19 @@ export async function POST() {
     );
   }
 }
+
+// Take daily response and store it in Supabase
+// export async function POST(request: Request) {
+//   const { data } = await request.json();
+//   console.log('Data:', data);
+//   // Store the data in Supabase
+//   const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
+//   const { data, error } = await supabase.from('sports').insert({
+//     data: data
+//   });
+//   if (error) {
+//     console.error('Error storing data in Supabase:', error);
+//     return NextResponse.json({ error: 'Failed to store data in Supabase' }, { status: 500 });
+//   }
+//   return NextResponse.json({ success: true, message: 'Data stored in Supabase' });
+// }
