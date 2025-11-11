@@ -5,9 +5,11 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const scheduleData = await fetch(`${process.env.BASE_URL}/api/schedule`).then(res => res.json());
+  console.log(scheduleData);
   const todaysGames = scheduleData.filter((sport: { sport: string; games: Game[] }) => {
     return sport.games.length > 0;
   });
+  console.log('todaysGames', todaysGames);
 
   return (
     <div className="pb-8">
@@ -19,12 +21,12 @@ export default async function Home() {
             {sport.games.map((game: Game, gameIndex: number) => (  
               <Card key={gameIndex} className="text-sm mb-4 border-green-400/20 bg-gray-800">
                 <CardContent className="p-0">
-                  <p className="text-sm text-green-200">{game.home_team} vs {game.away_team} @ {new Date(game.commence_time).toLocaleTimeString()}</p>
+                  <p className="text-sm text-green-200">{game.home_team} vs {game.away_team} @ {new Date(game.commence_time).toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: '2-digit', minute: '2-digit' })}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        ))} 
+        ))}
       </div>
     </div>
   );
