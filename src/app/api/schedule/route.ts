@@ -36,3 +36,18 @@ export async function GET() {
     return NextResponse.json({ error: 'Failed to fetch schedules' }, { status: 500 });
   }
 }
+
+// Send Data from the API and store it in Supabase
+export async function POST(request: Request) {
+  // const { data } = await request.json();
+  // const { error } = await createClient({
+  //   db: {
+  //     schema: 'public',
+  //   },
+  // }).from('schedule').insert(data);
+  // if (error) {
+  //   console.error('Error storing schedule data:', error);
+  //   return NextResponse.json({ error: 'Failed to store schedule data' }, { status: 500 });
+  // }
+  // return NextResponse.json({ success: true, message: 'Schedule data stored successfully' });
+}

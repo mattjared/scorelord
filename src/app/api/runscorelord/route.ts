@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { SportData } from '@/app/types';
 import { fetchSportsData } from '@/app/lib';
 import { sendToSlack } from '@/app/lib';
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 
 export const dynamic = 'force-dynamic';
 export async function POST() {
