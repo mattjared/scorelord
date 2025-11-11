@@ -9,19 +9,20 @@ export async function GET() {
   try {
     console.log('Fetching schedule from supabase');
     // Get today's date in Eastern Time (YYYY-MM-DD format)
-    const todayET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }));
-    const todayDateString = todayET.toISOString().split('T')[0];
+    const todayET = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+    const todayDateString = new Date(todayET).toISOString();
     
     console.log('🔍 Looking for games on date:', todayDateString);
     
     // only get games for today for the sports in the sports array
     const allSchedules = await Promise.all(
       sports.map(async (sport: { key: string; name: string }) => {
+        // get any future games for the sport
         const { data, error } = await supabase
           .from('games')
           .select('*')
           .eq('sport_key', sport.key)
-          .eq('game_date', todayDateString)
+          .gte('commence_time', todayDateString)
           .eq('completed', false)
           .order('commence_time', { ascending: true })
         if (error) {
@@ -32,12 +33,7 @@ export async function GET() {
         return { sport: sport.name, games: data || [] };
       })
     );
-    
-    // Filter out sports with no games
-    // const filteredSchedules = allSchedules.filter(schedule => schedule.games.length > 0);
-    //
-    
-    
+
     return NextResponse.json(allSchedules);
   } catch (error) {
     console.error('Error fetching schedules:', error);
