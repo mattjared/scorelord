@@ -12,7 +12,11 @@ export async function GET() {
     // Get today's schedule from API and store it in the database
     const allSchedules = await Promise.all(
       sports.map(async (sport) => {
-        const url = `${process.env.API_BASE_URL}/${sport.key}/events?apiKey=${process.env.ODDS_API_KEY}`;
+        // get todays date in ISO format
+        const todaysDate = new Date().toISOString();
+        const cleanTomorrowTime = new Date(new Date(todaysDate).getTime() + 24 * 60 * 60 * 1000).toISOString().split('.')[0] + 'Z';
+        const url = `${process.env.API_BASE_URL}/${sport.key}/events?apiKey=${process.env.ODDS_API_KEY}?commenceTimeTo=${cleanTomorrowTime}`;
+        // example odds api url: https://api.the-odds-api.com/v4/sports/baseball_mlb/events/?apiKey=1234567890
         const response = await fetch(url);
         if (!response.ok) {
           console.error(`Failed to fetch ${sport.name}:`, response.status);

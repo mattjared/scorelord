@@ -8,19 +8,19 @@ export const sports = [
   { key: 'baseball_mlb', name: 'MLB', icon: "⚾️"},
   { key: 'soccer_epl', name: 'EPL', icon: "⚽️"},
   { key: 'soccer_usa_mls', name: 'MLS', icon: "⚽️"},
-  // { key: 'basketball_wncaab', name: 'NCAAW', icon: "🏀"},
-  // { key: 'basketball_ncaab', name: 'NCAAM', icon: "🏀"},
+  { key: 'basketball_wncaab', name: 'NCAAW', icon: "🏀"},
+  { key: 'basketball_ncaab', name: 'NCAAM', icon: "🏀"},
   { key: 'basketball_wnba', name: 'WNBA', icon: "🏀"},
 ] as const;
 
 export type Sport = (typeof sports)[number]['name'];
 
-interface Score {
+export interface Score {
   name: string;
   score: string;
 }
 
-interface GameScore {
+export interface GameScore {
   id: string;
   sport_key: string;
   sport_title: string;
