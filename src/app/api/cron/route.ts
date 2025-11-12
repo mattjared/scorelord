@@ -6,30 +6,15 @@ export async function GET() {
   console.log('Cron job triggered at:', new Date().toISOString());
 
   try {
-    const url = `${process.env.BASE_URL}/api/runscorelord`;
-    console.log('Attempting to fetch:', url);
+    // set scores
+    const setScoresResponse = await fetch(`${process.env.BASE_URL}/api/setScores`);
+    const setScoresResponseData = await setScoresResponse.json();
+    console.log('Set scores response:', setScoresResponseData);
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'Cron job triggered' }),
-      // Add a timeout to prevent the request from hanging indefinitely
-      signal: AbortSignal.timeout(30000) // 30 seconds timeout
-    });
-
-    console.log('Response status:', response.status);
-    console.log('Response headers:', JSON.stringify(Object.fromEntries(response.headers)));
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Error response:', errorText);
-      throw new Error(`Failed to send Slack message: ${response.status} ${errorText}`);
-    }
-
-    const responseData = await response.json();
-    console.log('Response data:', responseData);
+    // set schedules
+    const summonResponse = await fetch(`${process.env.BASE_URL}/api/summon`);
+    const summonResponseData = await summonResponse.json();
+    console.log('Summon response:', summonResponseData);
 
     return NextResponse.json({ success: true, message: 'Cron job executed successfully' });
   } catch (error) {
