@@ -12,7 +12,7 @@ export default async function Home() {
       <div className="grid grid-cols-4 gap-6 text-green-200">
         {scheduleData.map((sport: { sport: string; games: Game[] }) => (
           sport.games.length > 0 ? (
-          <div key={sport.sport} className="p-3 rounded-lg space-y-2 text-xs text-green-200 mb-4">
+          <div key={sport.sport} className="p-3 rounded-lg space-y-2 text-xs text-green-200 mb-4 max-h-[500px] overflow-y-auto scrollbar-thin scrollbar-thumb-green-400/20 scrollbar-track-gray-800">
             <h3 className="text-lg font-bold text-purple-400 mb-2">{sport.sport}</h3>
             {sport.games.map((game: Game, gameIndex: number) => (
               <Card key={gameIndex} className="text-xsm mb-4 border-green-400/20 bg-gray-800 p-2">
@@ -24,7 +24,7 @@ export default async function Home() {
               </Card>
             ))}
           </div>
-          ) : null
+        ) : null
         ))}
       </div>
     </div>
