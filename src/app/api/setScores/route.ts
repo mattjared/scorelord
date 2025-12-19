@@ -1,5 +1,5 @@
-import { supabase } from '@/app/lib/supabase';
-import { GameScore, sports } from '@/app/lib/sports';
+import { supabase } from '@/app/utils/supabase';
+import { GameScore, sports } from '@/app/utils/sports';
 import { NextResponse } from 'next/server';
 
 // retrieve all scores and add them to the database

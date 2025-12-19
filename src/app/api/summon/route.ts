@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 // import { Game } from '@/app/types';
-import { sports } from '@/app/lib/sports';
-import { supabase } from '@/app/lib/supabase';
+import { sports } from '@/app/utils/sports';
+import { supabase } from '@/app/utils/supabase';
 import { Game } from '@/app/types';
 // force dynamic
 export const dynamic = 'force-dynamic';

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { Sport } from '@/app/lib/sports';
-import { fetchSportData } from '@/app/lib/sports';
-import { sports } from '@/app/lib/sports';
+import { Sport } from '@/app/utils/sports';
+import { fetchSportData } from '@/app/utils/sports';
+import { sports } from '@/app/utils/sports';
 
 export const dynamic = 'force-dynamic';
 // Example API call: http://localhost:3000/api/sports?sport=all
